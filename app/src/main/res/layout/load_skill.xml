@@ -37,10 +37,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Category"
+                    android:layout_margin="8dp"
                     android:textSize="20sp"/>
 
                 <Spinner
                     android:id="@+id/categorySpinner"
+                    android:layout_margin="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 

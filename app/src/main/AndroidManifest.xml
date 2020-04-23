@@ -22,6 +22,7 @@
         <activity android:name=".CreateSkill"/>
         <activity android:name=".LoadSkill"/>
         <activity android:name=".SelectProfile"/>
+        <activity android:name=".LoadProfile"/>
     </application>
 
 </manifest>

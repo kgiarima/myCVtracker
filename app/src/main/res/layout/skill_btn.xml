@@ -11,6 +11,9 @@
         android:id="@+id/skillBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"/>
+        android:layout_margin="8dp"
+        android:text="Title"
+        android:background="#FFD54F"
+        android:textColor="#D0090802"/>
 
 </LinearLayout>

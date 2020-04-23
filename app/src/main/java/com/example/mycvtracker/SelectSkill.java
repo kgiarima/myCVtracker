@@ -88,14 +88,12 @@ public class SelectSkill extends AppCompatActivity {
     }
 
     public void selectSKill(String skillTitle){
-//        finish();
         Intent i = new Intent(this, LoadSkill.class);
         i.putExtra("skillTitle", skillTitle);
         startActivity(i);
     }
 
     public void addSkill(View view){
-//        finish();
         Intent intent = new Intent(SelectSkill.this, CreateSkill.class);
         startActivity(intent);
     }

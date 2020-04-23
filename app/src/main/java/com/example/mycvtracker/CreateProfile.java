@@ -37,13 +37,6 @@ public class CreateProfile extends AppCompatActivity {
         Intent intent = new Intent(CreateProfile.this, SelectSkill.class);
         startActivity(intent);
 
-//        for(int i=0;i<5;i++) {
-//            View sumView = inflater.inflate(R.layout.skill_btn, summaryLL, false);
-//            Button skillBtn = sumView.findViewById(R.id.skillBtn);
-//            skillBtn.setText("Summary "+i);
-//
-//            summaryLL.addView(sumView);
-//        }
     }
 
     public void clickOnSkill(View view){

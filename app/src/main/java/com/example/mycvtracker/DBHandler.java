@@ -178,6 +178,44 @@ public class DBHandler extends SQLiteOpenHelper {
         return profile;
     }
 
+
+    public boolean deleteProfile(String profile) {
+        boolean result = false;
+        String query = "SELECT * FROM " + TABLE_PROFILES + " WHERE " + COLUMN_PROFILE + " = '" + profile + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            int deleted = db.delete(TABLE_PROFILES, COLUMN_PID + " = ?", new String[] { cursor.getString(0) });
+            if(deleted>0){
+                result = true;
+            }
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
+    public boolean updateProfile(String oldProfile, String profile, String fname, String email,String phone,String birthday) {
+        boolean result = false;
+        String query = "SELECT * FROM " + TABLE_PROFILES + " WHERE " + COLUMN_PROFILE + " = '" + oldProfile + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            ContentValues cv = new ContentValues();
+            cv.put(COLUMN_PID, Integer.parseInt(cursor.getString(0)));
+            cv.put(COLUMN_PROFILE, profile);
+            cv.put(COLUMN_FNAME, fname);
+            cv.put(COLUMN_EMAIL, email);
+            cv.put(COLUMN_PHONE, phone);
+            cv.put(COLUMN_BIRTHDAY, birthday);
+            db.update(TABLE_PROFILES, cv, COLUMN_PID+" = ?", new String[] {cursor.getString(0)});
+            result = true;
+        }
+        cursor.close();
+        db.close();
+        return result;
+    }
+
     public Cursor getAllProfiles(){
         String query = "SELECT * FROM " + TABLE_PROFILES;
         SQLiteDatabase db = this.getWritableDatabase();

@@ -28,6 +28,7 @@ public class SelectProfile extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        setContentView(R.layout.load_profiles);
 
         profilesLL = findViewById(R.id.profilesLL);
         inflater = LayoutInflater.from(this);
@@ -39,7 +40,7 @@ public class SelectProfile extends AppCompatActivity {
 
         DBHandler dbHandler = new DBHandler(this);
         Cursor profiles = dbHandler.getAllProfiles();
-
+        System.out.println("<-------------- profiles number " +profiles.getCount());
         if(profiles.getCount()==0) {
             return;
         }else {
@@ -53,7 +54,7 @@ public class SelectProfile extends AppCompatActivity {
                 profile.findViewById(R.id.profileBtn).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("<-------------- profile is "+btnTitle);
+                        System.out.println("<-------------- profile is " + btnTitle);
                         selectProfile(btnTitle);
                     }
                 });
@@ -62,8 +63,8 @@ public class SelectProfile extends AppCompatActivity {
     }
 
     public void selectProfile(String profileTitle){
-        Intent i = new Intent(this, LoadSkill.class); // todo LoadProfile
-        i.putExtra("profileTitle", profileTitle);
+        Intent i = new Intent(this, LoadProfile.class); // todo LoadProfile
+        i.putExtra("profileName", profileTitle);
         startActivity(i);
     }
 
