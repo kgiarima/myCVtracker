@@ -1,3 +1,15 @@
+
 <resources>
     <string name="app_name">My CV Tracker</string>
+
+    <string-array name="categories">
+        <item>SUMMARY</item>
+        <item>CORE COMPETENCIES</item>
+        <item>TECHNICAL PROFICIENCIES</item>
+        <item>PROFESSIONAL EXPERIENCE</item>
+        <item>STUDIES</item>
+        <item>CERTIFICATIONS</item>
+        <item>OTHER</item>
+    </string-array>
+
 </resources>
