@@ -7,7 +7,7 @@ import android.database.Cursor;
 
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "cvTrackerDB.db";
 
     public static final String TABLE_SKILLS = "skills";
@@ -38,14 +38,14 @@ public class DBHandler extends SQLiteOpenHelper {
 
         String CREATE_SKILLS_TABLE = "CREATE TABLE " + TABLE_SKILLS + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_TITLE + " TEXT PRIMARY KEY,"
+                + COLUMN_TITLE + " TEXT,"
                 + COLUMN_CATEGORY + " TEXT,"
                 + COLUMN_DESCRIPTION + " TEXT)";
         sqLiteDatabase.execSQL(CREATE_SKILLS_TABLE);
 
         String CREATE_PROFILES_TABLE = "CREATE TABLE " + TABLE_PROFILES + "("
                 + COLUMN_PID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_PROFILE + " TEXT PRIMARY KEY,"
+                + COLUMN_PROFILE + " TEXT,"
                 + COLUMN_FNAME + " TEXT,"
                 + COLUMN_EMAIL  + " TEXT,"
                 + COLUMN_PHONE + " TEXT,"
@@ -57,13 +57,55 @@ public class DBHandler extends SQLiteOpenHelper {
                 + COLUMN_PS_PROFILE + " TEXT,"
                 + COLUMN_PS_SKILL + " TEXT)";
         sqLiteDatabase.execSQL(CREATE_PROFILESKILLS_TABLE);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_SKILLS);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILES);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILESKILLS);
         onCreate(sqLiteDatabase);
     }
+
+    public boolean addSkillToProfile(String skillTitle, String profileName) {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_PS_SKILL, skillTitle);
+        values.put(COLUMN_PS_PROFILE, profileName);
+        SQLiteDatabase db = this.getWritableDatabase();
+        long res = db.insert(TABLE_PROFILESKILLS, null, values);
+//        db.close();
+        if(res==-1) {
+            return false;
+        }else{
+            return true;
+        }
+    }
+    public Cursor findSkillsByProfile(String profileName){
+        String query = "SELECT * FROM " + TABLE_PROFILESKILLS + " WHERE " +COLUMN_PS_PROFILE + " = '" + profileName + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+//        db.close();
+        return cursor;
+    }
+
+
+    public boolean removeSkillFromProfile(String profileName, String title) {
+        boolean result = false;
+        String query = "SELECT * FROM " + TABLE_PROFILESKILLS + " WHERE " + COLUMN_PS_PROFILE + " = '" + profileName + "' AND "+COLUMN_PS_SKILL +" = '"+title+"'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            int deleted = db.delete(TABLE_PROFILESKILLS, COLUMN_PS_ID + " = ?", new String[] { cursor.getString(0) });
+            if(deleted>0){
+                result = true;
+            }
+        }
+        cursor.close();
+//        db.close();
+        return result;
+    }
+
 
     public boolean addSkill(Skill skill) {
         ContentValues values = new ContentValues();
@@ -94,7 +136,8 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.close();
         } else {
             skill = null;
-        } db.close();
+        }
+//        db.close();
         return skill;
     }
 
@@ -102,6 +145,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_SKILLS + " WHERE " + COLUMN_CATEGORY+ " = '" + category + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
+//        db.close();
         return cursor;
     }
 
@@ -118,7 +162,7 @@ public class DBHandler extends SQLiteOpenHelper {
             }
         }
         cursor.close();
-        db.close();
+//        db.close();
         return result;
     }
 
@@ -137,7 +181,7 @@ public class DBHandler extends SQLiteOpenHelper {
             result = true;
         }
         cursor.close();
-        db.close();
+//        db.close();
         return result;
     }
 
@@ -150,7 +194,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_BIRTHDAY, profile.getBirthday());
         SQLiteDatabase db = this.getWritableDatabase();
         long res = db.insert(TABLE_PROFILES, null, values);
-        db.close();
+//        db.close();
         if(res==-1) {
             return false;
         }else{
@@ -174,7 +218,8 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.close();
         } else {
             profile = null;
-        } db.close();
+        }
+//        db.close();
         return profile;
     }
 
@@ -191,7 +236,7 @@ public class DBHandler extends SQLiteOpenHelper {
             }
         }
         cursor.close();
-        db.close();
+//        db.close();
         return result;
     }
 
@@ -212,7 +257,7 @@ public class DBHandler extends SQLiteOpenHelper {
             result = true;
         }
         cursor.close();
-        db.close();
+//        db.close();
         return result;
     }
 
@@ -220,6 +265,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String query = "SELECT * FROM " + TABLE_PROFILES;
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
+//        db.close();
         return cursor;
     }
 }

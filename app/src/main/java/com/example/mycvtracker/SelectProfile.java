@@ -72,4 +72,8 @@ public class SelectProfile extends AppCompatActivity {
         Intent intent = new Intent(this, CreateProfile.class);
         startActivity(intent);
     }
+
+    public void cancel(View view){
+        finish();
+    }
 }

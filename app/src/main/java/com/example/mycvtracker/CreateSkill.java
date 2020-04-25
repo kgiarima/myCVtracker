@@ -21,6 +21,8 @@ public class CreateSkill  extends AppCompatActivity  implements AdapterView.OnIt
     private Spinner categorySpinner;
     private EditText descriptionText;
 
+    ArrayAdapter<CharSequence> adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +32,7 @@ public class CreateSkill  extends AppCompatActivity  implements AdapterView.OnIt
         categorySpinner = findViewById(R.id.categorySpinner);
         descriptionText = findViewById(R.id.descriptionText);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.categories, android.R.layout.simple_spinner_item);
+        adapter = ArrayAdapter.createFromResource(this, R.array.categories, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
@@ -57,11 +59,12 @@ public class CreateSkill  extends AppCompatActivity  implements AdapterView.OnIt
                     boolean inserted = dbHandler.addSkill(skill);
                     if(inserted) {
                         titleText.setText("");
+                        categorySpinner.setSelection(adapter.getPosition("SUMMARY"));
                         descriptionText.setText("");
                         Toast toast = Toast.makeText(this, "Skill was successfully created!", Toast.LENGTH_SHORT);
                         toast.show();
 
-                        finish();
+//                        finish();
                     }else{
                         Toast toast = Toast.makeText(this, "Skill could not be created!",Toast.LENGTH_SHORT);
                         toast.show();

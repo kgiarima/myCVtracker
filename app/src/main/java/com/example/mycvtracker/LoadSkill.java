@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,11 +20,12 @@ public class LoadSkill  extends AppCompatActivity implements AdapterView.OnItemS
     private String description;
     private String oldTitle;
 
-    private EditText titleText;
+    private TextView titleText;
     private Spinner categorySpinner;
     private EditText descriptionText;
-
-    ArrayAdapter<CharSequence> adapter;
+    private Button removeBtn;
+    private SelectedSkillsHandler ssh;
+    private ArrayAdapter<CharSequence> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,8 @@ public class LoadSkill  extends AppCompatActivity implements AdapterView.OnItemS
         titleText = findViewById(R.id.titleText);
         categorySpinner = findViewById(R.id.categorySpinner);
         descriptionText = findViewById(R.id.descriptionText);
+        removeBtn = findViewById(R.id.removeBtn);
+        ssh = new SelectedSkillsHandler();
 
         adapter = ArrayAdapter.createFromResource(this, R.array.categories, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
@@ -45,8 +50,10 @@ public class LoadSkill  extends AppCompatActivity implements AdapterView.OnItemS
     private void loadSkill() {
         Bundle extras = getIntent().getExtras();
         DBHandler dbHandler = new DBHandler(this);
+        if(extras.getBoolean("canBeRemoved")){
+            removeBtn.setVisibility(View.VISIBLE);
+        }
         Skill skill = dbHandler.findSkill( extras.getString("skillTitle"));
-
         titleText.setText(skill.getTitle());
         oldTitle = titleText.getText().toString();
         categorySpinner.setSelection(adapter.getPosition(skill.getCategory()));
@@ -107,6 +114,11 @@ public class LoadSkill  extends AppCompatActivity implements AdapterView.OnItemS
     }
 
     public void cancel(View view) {
+        finish();
+    }
+
+    public void removeSkill(View view) {
+        ssh.removeSkill(titleText.getText().toString());
         finish();
     }
 }

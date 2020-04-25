@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void loadSkills(View view) {
         Intent intent = new Intent(MainActivity.this, SelectSkill.class);
+        intent.putExtra("returnSkill", false);
         startActivity(intent);
     }
 
