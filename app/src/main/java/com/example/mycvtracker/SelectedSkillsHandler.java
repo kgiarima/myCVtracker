@@ -9,9 +9,9 @@ the profile activity then uses these arrays to adapt properly
  */
 public class SelectedSkillsHandler {
 
-    private static ArrayList<String> selectedSkills = new ArrayList<>(); // store the active skills
-    private static ArrayList<String> removedSkills = new ArrayList<>();
-    private static ArrayList<String> totalSkills = new ArrayList<>();
+    private static ArrayList<String> selectedSkills = new ArrayList<>(); // store the added skills
+    private static ArrayList<String> removedSkills = new ArrayList<>(); // store the removed skills
+    private static ArrayList<String> totalSkills = new ArrayList<>(); // store the total active skills
 
     public static ArrayList<String> getTotalSkills() {
         return totalSkills;

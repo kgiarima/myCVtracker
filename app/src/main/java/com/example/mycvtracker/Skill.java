@@ -9,7 +9,6 @@ public class Skill {
     private String description;
 
     public Skill(String title, String category, String description) {
-        // this.id = id;
         this.title = title;
         this.category = category;
         this.description = description;

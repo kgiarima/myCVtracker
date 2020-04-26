@@ -155,6 +155,7 @@ public class CreateProfile extends AppCompatActivity {
     // open skill selection to add new skills to the profile
     public void addSkill(View view) {
         stillOpen = true;
+        ssh.setTotalSkills(selectedSkills);
         updateValues();
         Intent intent = new Intent(CreateProfile.this, SelectSkill.class);
         intent.putExtra("returnSkill", true);

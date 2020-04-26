@@ -25,6 +25,31 @@ public class SelectSkill extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.select_skill);
+
+        summaryLL = findViewById(R.id.summaryLL);
+        coreCompetenciesLL = findViewById(R.id.coreCompetenciesLL);
+        technicalProficienciesLL = findViewById(R.id.technicalProficienciesLL);
+        professionalExperienceLL = findViewById(R.id.professionalExperienceLL);
+        studiesLL = findViewById(R.id.studiesLL);
+        certificationsLL = findViewById(R.id.certificationsLL);
+        otherLL = findViewById(R.id.otherLL);
+        inflater = LayoutInflater.from(this);
+        selectSkillBtn = findViewById(R.id.selectSkillBtn);
+        editSkillBtn = findViewById(R.id.editSkillBtn);
+        ssh = new SelectedSkillsHandler();
+
+        // add the appropriate skills for every skill category
+        loadCategorySkills("SUMMARY", summaryLL);
+        loadCategorySkills("CORE COMPETENCIES", coreCompetenciesLL);
+        loadCategorySkills("TECHNICAL PROFICIENCIES", technicalProficienciesLL);
+        loadCategorySkills("PROFESSIONAL EXPERIENCE", professionalExperienceLL);
+        loadCategorySkills("STUDIES", studiesLL);
+        loadCategorySkills("CERTIFICATIONS", certificationsLL);
+        loadCategorySkills("OTHER", otherLL);
+
+        Bundle extras = getIntent().getExtras();
+        returnSkill =  extras.getBoolean("returnSkill"); // returnSkill value is passed from the previous activity to determine if a skill is expected to be added / returned to a profile
     }
 
     @Override
