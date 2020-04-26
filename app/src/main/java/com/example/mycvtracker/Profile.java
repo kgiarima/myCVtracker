@@ -1,5 +1,6 @@
 package com.example.mycvtracker;
 
+// a class to handle profiles
 public class Profile  {
 
     private int id;

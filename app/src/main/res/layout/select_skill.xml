@@ -272,6 +272,15 @@
                 android:text="Edit Skill"
                 android:onClick="editSkill"
                 android:visibility="invisible"/>
+
+            <Button
+                style="@style/Widget.AppCompat.Button.Borderless"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal"
+                android:text="Back"
+                android:onClick="exit"/>
         </LinearLayout>
 
     </LinearLayout>

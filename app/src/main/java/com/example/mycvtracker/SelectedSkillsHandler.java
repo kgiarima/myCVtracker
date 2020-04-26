@@ -2,9 +2,14 @@ package com.example.mycvtracker;
 
 import java.util.ArrayList;
 
+/*
+class SelectedSkillsHandler is used to store lists of skills associated to a profile activity (create / edit)
+when a skill is added / removed to / from the profile inside a skill activity the proper arrays are updated
+the profile activity then uses these arrays to adapt properly
+ */
 public class SelectedSkillsHandler {
 
-    private static ArrayList<String> selectedSkills = new ArrayList<>();
+    private static ArrayList<String> selectedSkills = new ArrayList<>(); // store the active skills
     private static ArrayList<String> removedSkills = new ArrayList<>();
     private static ArrayList<String> totalSkills = new ArrayList<>();
 

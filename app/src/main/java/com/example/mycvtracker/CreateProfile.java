@@ -15,14 +15,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+// CreateProfile handles the activity to create a new user profile
 public class CreateProfile extends AppCompatActivity {
 
-    EditText profileTitleText, fnameText, emailText, phoneText, birthdayText;
-    LinearLayout summaryLL, coreCompetenciesLL, technicalProficienciesLL, professionalExperienceLL, studiesLL, certificationsLL, otherLL;
-    LayoutInflater inflater;
+    private EditText profileTitleText, fnameText, emailText, phoneText, birthdayText;
+    private LinearLayout summaryLL, coreCompetenciesLL, technicalProficienciesLL, professionalExperienceLL, studiesLL, certificationsLL, otherLL;
+    private LayoutInflater inflater;
     private SelectedSkillsHandler ssh;
-    private ArrayList<String> selectedSkills;
-    private boolean stillOpen;
+    private ArrayList<String> selectedSkills; // selected skills stores all the skills' titles that are selected to be added to the profile
+    private boolean stillOpen; // stillOpen is used to determine whether the activity is still valid to keep the current info (profileName, fullName, etc) or reset them
     private static String profileName, fname, email, phone, birthday;
 
     @Override
@@ -44,13 +45,13 @@ public class CreateProfile extends AppCompatActivity {
         certificationsLL = findViewById(R.id.certificationsLL);
         otherLL = findViewById(R.id.otherLL);
 
-        updateValues();
-
         inflater = LayoutInflater.from(this);
         ssh = new SelectedSkillsHandler();
         selectedSkills = new ArrayList<>();
-
         stillOpen = false;
+
+        // initializes the string values of the profile
+        updateValues();
     }
 
     @Override
@@ -79,30 +80,27 @@ public class CreateProfile extends AppCompatActivity {
         otherLL = findViewById(R.id.otherLL);
 
         inflater = LayoutInflater.from(this);
-
         stillOpen = false;
-        System.out.println("<---------- Resumed");
         selectedSkills = ssh.getSelectedSkills();
+
+        // show the skills to be added to the profile
         showSkills();
     }
 
     @Override
     protected void onStop(){
-        System.out.println("<---------- profile closed");
         super.onStop();
+        // if activity is stopped not to add/remove skills to the profile the selectedSKills arrays should be cleared
         if(!stillOpen) {
             ssh.clearArrayLists();
         }
     }
 
+    // add every selected skill to its category's linear layout
     private void showSkills(){
         DBHandler dbHandler = new DBHandler(this);
-        System.out.println("<---------- selectedSkills array size : "+selectedSkills.size());
-        if(selectedSkills.size()==0) {
-            return;
-        }else {
+        if(selectedSkills.size()>0) {
             for(int i=0;i<selectedSkills.size();i++){
-                System.out.println("<---------- skil "+i+" : "+selectedSkills.get(i));
                 Skill skill = dbHandler.findSkill(selectedSkills.get(i));
                 LinearLayout categoryLL = summaryLL;
                 switch (skill.getCategory()){
@@ -128,33 +126,33 @@ public class CreateProfile extends AppCompatActivity {
                         categoryLL=otherLL;
                         break;
                 }
-                System.out.println("<---------- Categroy is : "+categoryLL);
                 View sumView = inflater.inflate(R.layout.skill_btn, categoryLL, false);
                 final Button skillBtn = sumView.findViewById(R.id.skillBtn);
                 final String btnTitle = selectedSkills.get(i);
                 skillBtn.setText(selectedSkills.get(i));
-                System.out.println("<---------- Button text is : "+skillBtn.getText().toString());
                 categoryLL.addView(sumView);
+                // on click of a skill Load that skill in a new activity
                 sumView.findViewById(R.id.skillBtn).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         selectSkill(btnTitle);
-                        System.out.println("<-------------- skill is "+btnTitle);
                     }
                 });
             }
         }
     }
 
+    // Load the selected skill in a new activity
     private void selectSkill(String title){
-        updateValues();
+        stillOpen = true; // keep the current profile details
+        updateValues(); // update the profile details to the latest user input
         Intent i = new Intent(this, LoadSkill.class);
-        i.putExtra("skillTitle", title);
-        i.putExtra("canBeRemoved",true);
-        stillOpen = true;
+        i.putExtra("skillTitle", title); // a skill can be retrieved from the db by its title
+        i.putExtra("canBeRemoved",true); // skill can be removed from the current profile's selection
         startActivity(i);
     }
 
+    // open skill selection to add new skills to the profile
     public void addSkill(View view) {
         stillOpen = true;
         updateValues();
@@ -163,6 +161,7 @@ public class CreateProfile extends AppCompatActivity {
         startActivity(intent);
     }
 
+    // update the profile details (profile name, full name, email...) to the latest user input
     private void updateValues(){
         profileName = profileTitleText.getText().toString();
         fname = fnameText.getText().toString();
@@ -171,9 +170,9 @@ public class CreateProfile extends AppCompatActivity {
         birthday = birthdayText.getText().toString();
     }
 
+    // create the profile in the db and add all the related skills in the proper table
     public void createProfile(View view) {
         updateValues();
-
         if(profileName.isEmpty()){
             Toast toast = Toast.makeText(this, "Add a title first!",Toast.LENGTH_SHORT);
             toast.show();
@@ -187,14 +186,13 @@ public class CreateProfile extends AppCompatActivity {
                     if(inserted) {
                         Toast toast = Toast.makeText(this, "Profile was successfully created!", Toast.LENGTH_SHORT);
                         toast.show();
-                        setProfileSkills(profileName);
+                        setProfileSkills(profileName); // add all the related skills in the proper table
                         finish();
                     }else{
                         Toast toast = Toast.makeText(this, "Profile could not be created!",Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 }catch (Error err){
-                    System.out.println("Error : "+err);
                     Toast toast = Toast.makeText(this, "Something went wrong!",Toast.LENGTH_SHORT);
                     toast.show();
                 }
@@ -205,6 +203,7 @@ public class CreateProfile extends AppCompatActivity {
         }
     }
 
+    // a profile's skills are saved in a different db table than the actual profile
     private void setProfileSkills(String profileTitle) {
         DBHandler dbHandler = new DBHandler(this);
         Profile found = dbHandler.findProfile(profileTitle);
@@ -214,6 +213,7 @@ public class CreateProfile extends AppCompatActivity {
             return;
         }else{
             try {
+                // add every skill with the associated profile to the db
                 for(String skillTitle:selectedSkills) {
                     boolean inserted = dbHandler.addSkillToProfile(skillTitle,profileTitle);
                     if (inserted) {

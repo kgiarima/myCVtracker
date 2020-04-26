@@ -5,17 +5,24 @@ import android.content.Context;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+// class to handle all db actions (CRUD)
 public class DBHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 11;
     private static final String DATABASE_NAME = "cvTrackerDB.db";
 
+    /*
+    table 'skills' with its values: id, title (unique), category and description
+     */
     public static final String TABLE_SKILLS = "skills";
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_CATEGORY = "category";
     public static final String COLUMN_DESCRIPTION = "description";
 
+    /*
+    table 'profiles' with its values: id, profile (unique), fname, email, phone and birthday
+     */
     public static final String TABLE_PROFILES = "profiles";
     public static final String COLUMN_PID = "_id";
     public static final String COLUMN_PROFILE = "profile";
@@ -24,6 +31,9 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_PHONE = "phone";
     public static final String COLUMN_BIRTHDAY = "birthday";
 
+    /*
+    table 'profileskills' with its values: id, profile and skill to store all the profile-skills relations
+     */
     public static final String TABLE_PROFILESKILLS = "profileskills";
     public static final String COLUMN_PS_ID = "_id";
     public static final String COLUMN_PS_PROFILE = "profile";
@@ -87,7 +97,6 @@ public class DBHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
-
     public boolean removeSkillFromProfile(String profileName, String title) {
         boolean result = false;
         String query = "SELECT * FROM " + TABLE_PROFILESKILLS + " WHERE " + COLUMN_PS_PROFILE + " = '" + profileName + "' AND "+COLUMN_PS_SKILL +" = '"+title+"'";
@@ -103,16 +112,6 @@ public class DBHandler extends SQLiteOpenHelper {
         cursor.close();
         return result;
     }
-
-    public void removeSkillsFromProfile(String profileName) {
-        boolean result = false;
-        String query = "DELETE * FROM " + TABLE_PROFILESKILLS + " WHERE " + COLUMN_PS_PROFILE + " = '" + profileName + "'";
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.rawQuery(query, null);
-        return;
-    }
-
-
 
     public boolean addSkill(Skill skill) {
         ContentValues values = new ContentValues();
@@ -154,7 +153,6 @@ public class DBHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
-
     public boolean deleteSkill(String title) {
         boolean result = false;
         String query = "SELECT * FROM " + TABLE_SKILLS + " WHERE " + COLUMN_TITLE + " = '" + title + "'";
@@ -170,9 +168,9 @@ public class DBHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateSkill(String oldTitle, String title, String category, String description) {
+    public boolean updateSkill(String title, String category, String description) {
         boolean result = false;
-        String query = "SELECT * FROM " + TABLE_SKILLS + " WHERE " + COLUMN_TITLE + " = '" + oldTitle + "'";
+        String query = "SELECT * FROM " + TABLE_SKILLS + " WHERE " + COLUMN_TITLE + " = '" + title + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
@@ -224,8 +222,8 @@ public class DBHandler extends SQLiteOpenHelper {
         return profile;
     }
 
-
     public boolean deleteProfile(String profile) {
+        System.out.println("Deleting profile "+profile);
         boolean result = false;
         String query = "SELECT * FROM " + TABLE_PROFILES + " WHERE " + COLUMN_PROFILE + " = '" + profile + "'";
         SQLiteDatabase db = this.getWritableDatabase();

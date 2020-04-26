@@ -10,19 +10,15 @@ import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+// SelectProfile handles the activity to list all existing user profiles
 public class SelectProfile extends AppCompatActivity {
 
-    LinearLayout profilesLL;
-    LayoutInflater inflater;
+    private LinearLayout profilesLL;
+    private LayoutInflater inflater;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.load_profiles);
-
-        profilesLL = findViewById(R.id.profilesLL);
-        inflater = LayoutInflater.from(this);
-        loadProfiles();
     }
 
     @Override
@@ -36,25 +32,20 @@ public class SelectProfile extends AppCompatActivity {
     }
 
 
+    // retrieve all profiles from the db and list them in the profile's linear layout
     public void loadProfiles () {
-
         DBHandler dbHandler = new DBHandler(this);
         Cursor profiles = dbHandler.getAllProfiles();
-        System.out.println("<-------------- profiles number " +profiles.getCount());
-        if(profiles.getCount()==0) {
-            return;
-        }else {
+        if(profiles.getCount()>0){
             while (profiles.moveToNext()) {
                 View profile = inflater.inflate(R.layout.profile_btn, profilesLL, false);
                 final Button profileBtn = profile.findViewById(R.id.profileBtn);
                 final String btnTitle = profiles.getString(1);
-                // todo final String fname, ...
                 profileBtn.setText(profiles.getString(1));
                 profilesLL.addView(profile);
                 profile.findViewById(R.id.profileBtn).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        System.out.println("<-------------- profile is " + btnTitle);
                         selectProfile(btnTitle);
                     }
                 });
@@ -62,12 +53,14 @@ public class SelectProfile extends AppCompatActivity {
         }
     }
 
+    // when selecting a profile (identified by its Profile name), Load it in a new activity
     public void selectProfile(String profileTitle){
-        Intent i = new Intent(this, LoadProfile.class); // todo LoadProfile
-        i.putExtra("profileName", profileTitle);
+        Intent i = new Intent(this, LoadProfile.class);
+        i.putExtra("profileName", profileTitle); // profile name is used to retrieve a profile from the db
         startActivity(i);
     }
 
+    // load the create new profile activity
     public void addProfile(View view){
         Intent intent = new Intent(this, CreateProfile.class);
         startActivity(intent);

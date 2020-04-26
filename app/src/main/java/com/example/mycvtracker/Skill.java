@@ -1,5 +1,6 @@
 package com.example.mycvtracker;
 
+// a class to handle skills
 public class Skill {
 
     private int id;
