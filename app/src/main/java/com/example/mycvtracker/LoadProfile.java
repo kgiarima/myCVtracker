@@ -24,8 +24,9 @@ public class LoadProfile extends AppCompatActivity{
     LinearLayout summaryLL, coreCompetenciesLL, technicalProficienciesLL, professionalExperienceLL, studiesLL, certificationsLL, otherLL;
     LayoutInflater inflater;
     SelectedSkillsHandler ssh;
-    private ArrayList<String> selectedSkills, savedSkills;
-    private boolean stillOpen;
+    private ArrayList<String> totalSkills, dbSkills, addedSkills, removedSkills;
+    private boolean keepSSHArrays;
+    private boolean returned = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,65 +47,104 @@ public class LoadProfile extends AppCompatActivity{
         certificationsLL = findViewById(R.id.certificationsLL);
         otherLL = findViewById(R.id.otherLL);
 
-        selectedSkills = new ArrayList<>();
-        savedSkills = new ArrayList<>();
+        totalSkills = new ArrayList<>();
+        dbSkills = new ArrayList<>();
+        addedSkills = new ArrayList<>();
+        removedSkills = new ArrayList<>();
+
         inflater = LayoutInflater.from(this);
         ssh = new SelectedSkillsHandler();
-        stillOpen = false;
+        // use to clear (when exiting loadProfile) or not, the skills arrayLists
+        keepSSHArrays = false;
+
+        System.out.println("<---------- OnCreate : ");
 
         loadProfile();
+        setTotalSKills();
+        showProfileSkills();
+
     }
 
     @Override
     protected void onResume(){
         super.onResume();
 
-        profileTitleText = findViewById(R.id.profileName);
-        fnameText = findViewById(R.id.fname);
-        emailText = findViewById(R.id.email);
-        phoneText = findViewById(R.id.phone);
-        birthdayText = findViewById(R.id.birthday);
+        if(returned) {
+            setContentView(R.layout.load_profile);
 
-        summaryLL = findViewById(R.id.summaryLL);
-        coreCompetenciesLL = findViewById(R.id.coreCompetenciesLL);
-        technicalProficienciesLL = findViewById(R.id.technicalProficienciesLL);
-        professionalExperienceLL = findViewById(R.id.professionalExperienceLL);
-        studiesLL = findViewById(R.id.studiesLL);
-        certificationsLL = findViewById(R.id.certificationsLL);
-        otherLL = findViewById(R.id.otherLL);
+            profileTitleText = findViewById(R.id.profileName);
+            fnameText = findViewById(R.id.fname);
+            emailText = findViewById(R.id.email);
+            phoneText = findViewById(R.id.phone);
+            birthdayText = findViewById(R.id.birthday);
 
-        stillOpen = false;
-        System.out.println("<---------- Resumed");
-//        selectedSkills = ssh.getSelectedSkills();
-        loadProfileSkills();
+            summaryLL = findViewById(R.id.summaryLL);
+            coreCompetenciesLL = findViewById(R.id.coreCompetenciesLL);
+            technicalProficienciesLL = findViewById(R.id.technicalProficienciesLL);
+            professionalExperienceLL = findViewById(R.id.professionalExperienceLL);
+            studiesLL = findViewById(R.id.studiesLL);
+            certificationsLL = findViewById(R.id.certificationsLL);
+            otherLL = findViewById(R.id.otherLL);
+
+            totalSkills = new ArrayList<>();
+            dbSkills = new ArrayList<>();
+            addedSkills = ssh.getSelectedSkills();
+            removedSkills = ssh.getRemovedSkills();
+
+            keepSSHArrays = false;
+            System.out.println("<---------- Resumed, totalSKills are: " + totalSkills);
+
+
+            loadProfile();
+            setTotalSKills();
+            showProfileSkills();
+        }
     }
 
     @Override
     protected void onStop(){
         super.onStop();
-        if(!stillOpen) {
-            ssh.clearArrayList();
+        if(!keepSSHArrays) {
+            ssh.clearArrayLists();
         }
     }
 
-
-    private void setProfileSkills(String profileName){
+    // add skills titles to dbSkills (loadProfile)
+    private void loadProfileSkills(String profileName){
         DBHandler dbHandler = new DBHandler(this);
         Cursor profileSkills = dbHandler.findSkillsByProfile(profileName);
         if(profileSkills.getCount()==0) {
             return;
         }else {
             while (profileSkills.moveToNext()) {
-                savedSkills.add(profileSkills.getString(2));
-                ssh.addSkill(profileSkills.getString(2));
+                dbSkills.add(profileSkills.getString(2));
+//                ssh.addSkill(profileSkills.getString(2));
             }
+            System.out.println("<---------- loaded dbSkills are: "+dbSkills);
         }
     }
 
-    private void loadProfileSkills(){
+    private void setTotalSKills(){
+        System.out.println("<---------- Removed Skills are: "+removedSkills);
+        for(String dbSkill:dbSkills){
+            if(!removedSkills.contains(dbSkill)){
+                totalSkills.add(dbSkill);
+            }
+        }
+        System.out.println("<----------  added skills are: "+addedSkills);
+        for(String newSkill:addedSkills){
+            if(!removedSkills.contains(newSkill)){
+                totalSkills.add(newSkill);
+            }
+        }
+        System.out.println("<---------- after setting, totalSKills are: "+totalSkills);
+    }
+
+
+    private void showProfileSkills(){
         DBHandler dbHandler = new DBHandler(this);
-        for (String skillTitle:ssh.getSelectedSkills()){
-            if(!selectedSkills.contains(skillTitle)&&!ssh.getRemovedSkills().contains(skillTitle)) {
+        // fore every selected (not saved) skill
+        for (String skillTitle:totalSkills){
                 Skill skill = dbHandler.findSkill(skillTitle);
                 LinearLayout categoryLL = summaryLL;
                 switch (skill.getCategory()) {
@@ -130,21 +170,20 @@ public class LoadProfile extends AppCompatActivity{
                         categoryLL = otherLL;
                         break;
                 }
+                // add skill to the activity
                 final View sumView = inflater.inflate(R.layout.skill_btn, categoryLL, false);
                 final Button skillBtn = sumView.findViewById(R.id.skillBtn);
                 final String btnTitle = skill.getTitle();
                 skillBtn.setText(skill.getTitle());
                 categoryLL.addView(sumView);
-                selectedSkills.add(skill.getTitle());
+                // add skill to shown skills
                 sumView.findViewById(R.id.skillBtn).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
                         selectSkill(btnTitle);
                         System.out.println("<-------------- skill is " + btnTitle);
                     }
                 });
-            }
         }
     }
 
@@ -160,12 +199,12 @@ public class LoadProfile extends AppCompatActivity{
         phoneText.setText(profile.getPhone());
         birthdayText.setText(profile.getBirthday());
 
-        setProfileSkills(profile.getProfile());
-        loadProfileSkills();
+        loadProfileSkills(profile.getProfile());
     }
 
     private void selectSkill(String title){
-        stillOpen = true;
+        keepSSHArrays = true;
+        returned = true;
         Intent i = new Intent(this, LoadSkill.class);
         i.putExtra("skillTitle", title);
         i.putExtra("canBeRemoved",true);
@@ -187,6 +226,7 @@ public class LoadProfile extends AppCompatActivity{
                 Toast toast = Toast.makeText(this, "Profile was successfully updated!", Toast.LENGTH_SHORT);
                 toast.show();
                 setSkills(profileTitle);
+                removeSkills(profileTitle);
                 finish();
             }else{
                 Toast toast = Toast.makeText(this, "Profile could not be updated!",Toast.LENGTH_SHORT);
@@ -199,6 +239,30 @@ public class LoadProfile extends AppCompatActivity{
         }
     }
 
+    private void removeSkills(String profileName){
+        DBHandler dbHandler = new DBHandler(this);
+        Profile found = dbHandler.findProfile(profileName);
+        if (found == null){
+            Toast toast = Toast.makeText(this, "Profile could not be found!",Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }else {
+            try {
+                for (String skillTitle : removedSkills) {
+                    if(dbSkills.contains(skillTitle)){
+                        System.out.println("Removing skill "+skillTitle);
+                        boolean skillRemoved = dbHandler.removeSkillFromProfile(profileName,skillTitle);
+                        System.out.println("Removing skill was "+skillRemoved);
+                    }
+                }
+            } catch (Error err) {
+                System.out.println("Error : " + err);
+                Toast toast = Toast.makeText(this, "Something went wrong adding the skills to profile!", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        }
+    }
+
     private void setSkills(String profileTitle) {
         DBHandler dbHandler = new DBHandler(this);
         Profile found = dbHandler.findProfile(profileTitle);
@@ -208,11 +272,12 @@ public class LoadProfile extends AppCompatActivity{
             return;
         }else{
             try {
-                for(String skillTitle:selectedSkills) {
-                    if(!savedSkills.contains(skillTitle)) {
+                for(String skillTitle:addedSkills) {
+                    if(!dbSkills.contains(skillTitle)&&!removedSkills.contains(skillTitle)) {
                         boolean inserted = dbHandler.addSkillToProfile(skillTitle, profileTitle);
                         if (inserted) {
-                            savedSkills.add(skillTitle);
+                            dbSkills.add(skillTitle);
+                            addedSkills.remove(skillTitle);
                         } else {
                             Toast toast = Toast.makeText(this, "Skill " + skillTitle + " could not be added to the profile!", Toast.LENGTH_SHORT);
                             toast.show();
@@ -234,6 +299,7 @@ public class LoadProfile extends AppCompatActivity{
             boolean deleted = dbHandler.deleteProfile(oldProfileTitle);
             if(deleted) {
                 Toast toast = Toast.makeText(this, "Profile was successfully deleted!", Toast.LENGTH_SHORT);
+                dbHandler.removeSkillsFromProfile(oldProfileTitle);
                 toast.show();
                 finish();
             }else{
@@ -253,7 +319,10 @@ public class LoadProfile extends AppCompatActivity{
 
 
     public void addSkill(View view) {
-        stillOpen = true;
+        ssh.setSelectedSkills(addedSkills);
+        ssh.setTotalSkills(totalSkills);
+        keepSSHArrays = true;
+        returned = true;
         Intent intent = new Intent(LoadProfile.this, SelectSkill.class);
         intent.putExtra("returnSkill", true);
         startActivity(intent);

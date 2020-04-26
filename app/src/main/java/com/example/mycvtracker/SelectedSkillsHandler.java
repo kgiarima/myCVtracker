@@ -6,6 +6,15 @@ public class SelectedSkillsHandler {
 
     private static ArrayList<String> selectedSkills = new ArrayList<>();
     private static ArrayList<String> removedSkills = new ArrayList<>();
+    private static ArrayList<String> totalSkills = new ArrayList<>();
+
+    public static ArrayList<String> getTotalSkills() {
+        return totalSkills;
+    }
+
+    public static void setTotalSkills(ArrayList<String> totalSkills) {
+        SelectedSkillsHandler.totalSkills = totalSkills;
+    }
 
     public SelectedSkillsHandler(){}
 
@@ -30,9 +39,10 @@ public class SelectedSkillsHandler {
         SelectedSkillsHandler.removedSkills = removedSkills;
     }
 
-    public static void clearArrayList(){
+    public static void clearArrayLists(){
         selectedSkills.clear();
         removedSkills.clear();
+        totalSkills.clear();
     }
 
     public static void removeSkill(String skillTitle){

@@ -3,6 +3,8 @@ package com.example.mycvtracker;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.hardware.camera2.params.BlackLevelPattern;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,7 +85,7 @@ public class CreateProfile extends AppCompatActivity {
         System.out.println("<---------- profile closed");
         super.onStop();
         if(!stillOpen) {
-            ssh.clearArrayList();
+            ssh.clearArrayLists();
         }
     }
 

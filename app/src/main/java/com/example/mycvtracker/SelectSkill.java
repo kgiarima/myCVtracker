@@ -2,6 +2,7 @@ package com.example.mycvtracker;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -88,7 +89,7 @@ public class SelectSkill extends AppCompatActivity {
             return;
         }else {
             while (skills.moveToNext()) {
-                if(!returnSkill||(returnSkill&&!SSHandler.getSelectedSkills().contains(skills.getString(1)))) {
+                if(!returnSkill||(returnSkill&&!SSHandler.getTotalSkills().contains(skills.getString(1)))) {
                     final View sumView = inflater.inflate(R.layout.skill_btn, ll, false);
                     final Button skillBtn = sumView.findViewById(R.id.skillBtn);
                     final String btnTitle = skills.getString(1);
@@ -99,6 +100,7 @@ public class SelectSkill extends AppCompatActivity {
                         public void onClick(View v) {
 
                             if (returnSkill) {
+//                                skillBtn.setTextColor(Color.RED);
                                 selectedSkill = btnTitle;
                                 selectedSkillBtn = skillBtn;
                                 selectSkillBtn.setVisibility(View.VISIBLE);
