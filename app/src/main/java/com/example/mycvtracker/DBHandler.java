@@ -240,9 +240,9 @@ public class DBHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean updateProfile(String oldProfile, String profile, String fname, String email,String phone,String birthday) {
+    public boolean updateProfile(String profile, String fname, String email,String phone,String birthday) {
         boolean result = false;
-        String query = "SELECT * FROM " + TABLE_PROFILES + " WHERE " + COLUMN_PROFILE + " = '" + oldProfile + "'";
+        String query = "SELECT * FROM " + TABLE_PROFILES + " WHERE " + COLUMN_PROFILE + " = '" + profile + "'";
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {

@@ -15,41 +15,42 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+    // create a new profile template
     public void createProfile(View view) {
         Intent intent = new Intent(MainActivity.this, CreateProfile.class);
         startActivity(intent);
     }
 
+    // load existing profile templates
     public void loadProfiles(View view) {
         Intent intent = new Intent(MainActivity.this, SelectProfile.class);
         startActivity(intent);
     }
 
+    // create a new skill
     public void createSkill(View view) {
         Intent intent = new Intent(MainActivity.this, CreateSkill.class);
         startActivity(intent);
     }
 
+    // load existing skills
     public void loadSkills(View view) {
         Intent intent = new Intent(MainActivity.this, SelectSkill.class);
         intent.putExtra("returnSkill", false);
         startActivity(intent);
     }
 
+    // show some info about the app
     public void showInfo(View view) {
-        String info = "App created by:\n\nKiriakos Giarimagas\n\nMarios Tzitziras\n\nBetty Chrysou";
-        showMessage("Info",info);
+        String message = "Create your own personal CV templates based on your unique skills \n\n\nAn application created by:\nKiriakos Giarimagas";
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle("Application Info");
+        builder.setMessage(message);
+        builder.show();
     }
 
     public void exitApp(View view) {
         finish();
-    }
-
-    public void showMessage(String title, String message){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(true);
-        builder.setTitle(title);
-        builder.setMessage(message);
-        builder.show();
     }
 }

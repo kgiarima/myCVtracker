@@ -64,6 +64,12 @@ public class CreateProfile extends AppCompatActivity {
         phoneText = findViewById(R.id.phone);
         birthdayText = findViewById(R.id.birthday);
 
+        profileTitleText.setText(profileName);
+        fnameText.setText(fname);
+        emailText.setText(email);
+        phoneText.setText(phone);
+        birthdayText.setText(birthday);
+
         summaryLL = findViewById(R.id.summaryLL);
         coreCompetenciesLL = findViewById(R.id.coreCompetenciesLL);
         technicalProficienciesLL = findViewById(R.id.technicalProficienciesLL);

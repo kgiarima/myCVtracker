@@ -2,7 +2,6 @@ package com.example.mycvtracker;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -98,9 +97,8 @@ public class SelectSkill extends AppCompatActivity {
                     sumView.findViewById(R.id.skillBtn).setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-
                             if (returnSkill) {
-//                                skillBtn.setTextColor(Color.RED);
+                                Toast.makeText(SelectSkill.this,"Skill : "+btnTitle+" is selected",Toast.LENGTH_SHORT).show();
                                 selectedSkill = btnTitle;
                                 selectedSkillBtn = skillBtn;
                                 selectSkillBtn.setVisibility(View.VISIBLE);

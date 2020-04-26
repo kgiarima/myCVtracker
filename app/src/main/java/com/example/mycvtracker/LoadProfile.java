@@ -20,7 +20,7 @@ public class LoadProfile extends AppCompatActivity{
     EditText fnameText, emailText, phoneText, birthdayText;
     TextView profileTitleText;
 
-    String oldProfileTitle, profileTitle, fname, email, phone, birthday;
+    private static String oldProfileTitle, profileTitle, fname, email, phone, birthday;
     LinearLayout summaryLL, coreCompetenciesLL, technicalProficienciesLL, professionalExperienceLL, studiesLL, certificationsLL, otherLL;
     LayoutInflater inflater;
     SelectedSkillsHandler ssh;
@@ -77,6 +77,11 @@ public class LoadProfile extends AppCompatActivity{
             emailText = findViewById(R.id.email);
             phoneText = findViewById(R.id.phone);
             birthdayText = findViewById(R.id.birthday);
+
+            fnameText.setText(fname);
+            emailText.setText(email);
+            phoneText.setText(phone);
+            birthdayText.setText(birthday);
 
             summaryLL = findViewById(R.id.summaryLL);
             coreCompetenciesLL = findViewById(R.id.coreCompetenciesLL);
@@ -193,16 +198,18 @@ public class LoadProfile extends AppCompatActivity{
         Profile profile = dbHandler.findProfile( extras.getString("profileName"));
 
         profileTitleText.setText(profile.getProfile());
-        oldProfileTitle = profileTitleText.getText().toString();
-        fnameText.setText(profile.getFname());
-        emailText.setText(profile.getEmail());
-        phoneText.setText(profile.getPhone());
-        birthdayText.setText(profile.getBirthday());
+        if(!returned) {
+            fnameText.setText(profile.getFname());
+            emailText.setText(profile.getEmail());
+            phoneText.setText(profile.getPhone());
+            birthdayText.setText(profile.getBirthday());
+        }
 
         loadProfileSkills(profile.getProfile());
     }
 
     private void selectSkill(String title){
+        updateValues();
         keepSSHArrays = true;
         returned = true;
         Intent i = new Intent(this, LoadSkill.class);
@@ -213,15 +220,10 @@ public class LoadProfile extends AppCompatActivity{
 
     public void updateProfile(View view) {
         DBHandler dbHandler = new DBHandler(this);
-
-        profileTitle = profileTitleText.getText().toString();
-        fname = fnameText.getText().toString();
-        email = emailText.getText().toString();
-        phone = phoneText.getText().toString();
-        birthday = birthdayText.getText().toString();
+        updateValues();
 
         try {
-            boolean updated = dbHandler.updateProfile(oldProfileTitle,profileTitle,fname, email,phone,birthday);
+            boolean updated = dbHandler.updateProfile(profileTitle,fname, email,phone,birthday);
             if(updated) {
                 Toast toast = Toast.makeText(this, "Profile was successfully updated!", Toast.LENGTH_SHORT);
                 toast.show();
@@ -313,12 +315,16 @@ public class LoadProfile extends AppCompatActivity{
         }
     }
 
-    public void cancel(View view) {
-        finish();
+    private void updateValues(){
+        profileTitle = profileTitleText.getText().toString();
+        fname = fnameText.getText().toString();
+        email = emailText.getText().toString();
+        phone = phoneText.getText().toString();
+        birthday = birthdayText.getText().toString();
     }
 
-
     public void addSkill(View view) {
+        updateValues();
         ssh.setSelectedSkills(addedSkills);
         ssh.setTotalSkills(totalSkills);
         keepSSHArrays = true;
@@ -326,5 +332,9 @@ public class LoadProfile extends AppCompatActivity{
         Intent intent = new Intent(LoadProfile.this, SelectSkill.class);
         intent.putExtra("returnSkill", true);
         startActivity(intent);
+    }
+
+    public void cancel(View view) {
+        finish();
     }
 }
