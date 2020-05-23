@@ -153,21 +153,6 @@ public class DBHandler extends SQLiteOpenHelper {
         return cursor;
     }
 
-    public boolean deleteSkill(String title) {
-        boolean result = false;
-        String query = "SELECT * FROM " + TABLE_SKILLS + " WHERE " + COLUMN_TITLE + " = '" + title + "'";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(query, null);
-        if (cursor.moveToFirst()) {
-            int deleted = db.delete(TABLE_SKILLS, COLUMN_ID + " = ?", new String[] { cursor.getString(0) });
-            if(deleted>0){
-                result = true;
-            }
-        }
-        cursor.close();
-        return result;
-    }
-
     public boolean updateSkill(String title, String category, String description) {
         boolean result = false;
         String query = "SELECT * FROM " + TABLE_SKILLS + " WHERE " + COLUMN_TITLE + " = '" + title + "'";
@@ -222,6 +207,23 @@ public class DBHandler extends SQLiteOpenHelper {
         return profile;
     }
 
+    public boolean deleteSkill(String title) {
+        boolean result = false;
+        String query = "SELECT * FROM " + TABLE_SKILLS + " WHERE " + COLUMN_TITLE + " = '" + title + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        System.out.println("------------ deleting "+title);
+        if (cursor.moveToFirst()) {
+            System.out.println("------------ really deleting "+cursor.getString(0) );
+            int deleted = db.delete(TABLE_SKILLS, COLUMN_ID + " = ?", new String[] { cursor.getString(0) });
+            if(deleted>0){
+                result = true;
+            }
+        }
+        cursor.close();
+        return result;
+    }
+
     public boolean deleteProfile(String profile) {
         System.out.println("Deleting profile "+profile);
         boolean result = false;
@@ -229,6 +231,23 @@ public class DBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(query, null);
         if (cursor.moveToFirst()) {
+            int deleted = db.delete(TABLE_PROFILES, COLUMN_PID + " = ?", new String[] { cursor.getString(0) });
+            if(deleted>0){
+                result = true;
+            }
+        }
+        cursor.close();
+        return result;
+    }
+
+    public boolean deleteRelations(String title) {
+        System.out.println("Deleting relations of skill "+title);
+        boolean result = false;
+        String query = "SELECT * FROM " + TABLE_PROFILESKILLS + " WHERE " + COLUMN_PS_SKILL + " = '" + title + "'";
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            removeSkillFromProfile(cursor.getString(1),cursor.getString(2));
             int deleted = db.delete(TABLE_PROFILES, COLUMN_PID + " = ?", new String[] { cursor.getString(0) });
             if(deleted>0){
                 result = true;

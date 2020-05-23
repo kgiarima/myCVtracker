@@ -101,9 +101,11 @@ public class LoadSkill  extends AppCompatActivity implements AdapterView.OnItemS
     // delete the selected skill
     public void deleteSkill(View view) {
         DBHandler dbHandler = new DBHandler(this);
+        updateValues();
         try {
             boolean deleted = dbHandler.deleteSkill(title);
             if(deleted) {
+                boolean relationsDeleted = dbHandler.deleteRelations(title);
                 Toast toast = Toast.makeText(this, "Skill was successfully deleted!", Toast.LENGTH_SHORT);
                 toast.show();
                 finish();
