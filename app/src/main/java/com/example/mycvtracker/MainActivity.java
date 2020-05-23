@@ -2,8 +2,10 @@ package com.example.mycvtracker;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 
@@ -13,6 +15,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        setAnimation();
+    }
+
+    // enable background animation
+    public void setAnimation(){
+        ConstraintLayout cl = findViewById(R.id.layout);
+        AnimationDrawable ad = (AnimationDrawable) cl.getBackground();
+        ad.setEnterFadeDuration(1500);
+        ad.setExitFadeDuration(3500);
+        ad.start();
     }
 
     // create a new profile template

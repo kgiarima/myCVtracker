@@ -2,6 +2,7 @@ package com.example.mycvtracker;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import java.util.ArrayList;
 
 // LoadProfile handles the activity to list a selected profile with its properties and edit or delete it
@@ -58,6 +61,7 @@ public class LoadProfile extends AppCompatActivity{
         loadProfile(); // load the profile with its values
         setTotalSKills(); // load and set total skills as the sum of : the skills stored in the db + the new skills added - the skills removed
         showProfileSkills(); // show the total active skills to the user
+        setAnimation();
     }
 
     @Override
@@ -97,7 +101,17 @@ public class LoadProfile extends AppCompatActivity{
             loadProfile(); // load the profile with its values
             setTotalSKills(); // load and set total skills as the sum of : the skills stored in the db + the new skills added - the skills removed
             showProfileSkills(); // show the total active skills to the user
+            setAnimation();
         }
+    }
+
+    // enable background animation
+    public void setAnimation(){
+        ConstraintLayout cl = findViewById(R.id.layout);
+        AnimationDrawable ad = (AnimationDrawable) cl.getBackground();
+        ad.setEnterFadeDuration(1500);
+        ad.setExitFadeDuration(3500);
+        ad.start();
     }
 
     @Override

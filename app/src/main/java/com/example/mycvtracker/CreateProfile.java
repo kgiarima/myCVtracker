@@ -1,9 +1,11 @@
 package com.example.mycvtracker;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.hardware.camera2.params.BlackLevelPattern;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -52,6 +54,7 @@ public class CreateProfile extends AppCompatActivity {
 
         // initializes the string values of the profile
         updateValues();
+        setAnimation();
     }
 
     @Override
@@ -85,6 +88,7 @@ public class CreateProfile extends AppCompatActivity {
 
         // show the skills to be added to the profile
         showSkills();
+        setAnimation();
     }
 
     @Override
@@ -94,6 +98,15 @@ public class CreateProfile extends AppCompatActivity {
         if(!stillOpen) {
             ssh.clearArrayLists();
         }
+    }
+
+    // enable background animation
+    public void setAnimation(){
+        ConstraintLayout cl = findViewById(R.id.layout);
+        AnimationDrawable ad = (AnimationDrawable) cl.getBackground();
+        ad.setEnterFadeDuration(1500);
+        ad.setExitFadeDuration(3500);
+        ad.start();
     }
 
     // add every selected skill to its category's linear layout

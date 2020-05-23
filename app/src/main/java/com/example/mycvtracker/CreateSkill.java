@@ -1,5 +1,6 @@
 package com.example.mycvtracker;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 // CreateSkill handles the activity of creating a new skill
 public class CreateSkill  extends AppCompatActivity  implements AdapterView.OnItemSelectedListener{
@@ -35,6 +37,16 @@ public class CreateSkill  extends AppCompatActivity  implements AdapterView.OnIt
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         // Apply the adapter to the spinner
         categorySpinner.setAdapter(adapter);
+        setAnimation();
+    }
+
+    // enable background animation
+    public void setAnimation(){
+        ConstraintLayout cl = findViewById(R.id.layout);
+        AnimationDrawable ad = (AnimationDrawable) cl.getBackground();
+        ad.setEnterFadeDuration(1500);
+        ad.setExitFadeDuration(3500);
+        ad.start();
     }
 
     @Override

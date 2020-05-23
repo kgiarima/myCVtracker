@@ -1,5 +1,6 @@
 package com.example.mycvtracker;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 // LoadSkill handles the activity to list a selected skill with its properties, edit, delete or add/remove it to/from a profile if possible
 public class LoadSkill  extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -41,6 +43,16 @@ public class LoadSkill  extends AppCompatActivity implements AdapterView.OnItemS
         categorySpinner.setAdapter(adapter);
 
         loadSkill();
+        setAnimation();
+    }
+
+    // enable background animation
+    public void setAnimation(){
+        ConstraintLayout cl = findViewById(R.id.layout);
+        AnimationDrawable ad = (AnimationDrawable) cl.getBackground();
+        ad.setEnterFadeDuration(1500);
+        ad.setExitFadeDuration(3500);
+        ad.start();
     }
 
     // load the selected skill
@@ -105,7 +117,7 @@ public class LoadSkill  extends AppCompatActivity implements AdapterView.OnItemS
         try {
             boolean deleted = dbHandler.deleteSkill(title);
             if(deleted) {
-                boolean relationsDeleted = dbHandler.deleteRelations(title);
+                dbHandler.deleteRelations(title); // remove skill from profiles and delete the db relations
                 Toast toast = Toast.makeText(this, "Skill was successfully deleted!", Toast.LENGTH_SHORT);
                 toast.show();
                 finish();

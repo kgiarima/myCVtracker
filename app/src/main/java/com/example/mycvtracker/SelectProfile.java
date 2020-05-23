@@ -2,6 +2,7 @@ package com.example.mycvtracker;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 // SelectProfile handles the activity to list all existing user profiles
 public class SelectProfile extends AppCompatActivity {
@@ -29,8 +31,17 @@ public class SelectProfile extends AppCompatActivity {
         profilesLL = findViewById(R.id.profilesLL);
         inflater = LayoutInflater.from(this);
         loadProfiles();
+        setAnimation();
     }
 
+    // enable background animation
+    public void setAnimation(){
+        ConstraintLayout cl = findViewById(R.id.layout);
+        AnimationDrawable ad = (AnimationDrawable) cl.getBackground();
+        ad.setEnterFadeDuration(1500);
+        ad.setExitFadeDuration(3500);
+        ad.start();
+    }
 
     // retrieve all profiles from the db and list them in the profile's linear layout
     public void loadProfiles () {

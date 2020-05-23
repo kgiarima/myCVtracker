@@ -2,6 +2,7 @@ package com.example.mycvtracker;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 // SelectSkill handles the activity to list all existing skills to the user
 public class SelectSkill extends AppCompatActivity {
@@ -50,6 +52,7 @@ public class SelectSkill extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         returnSkill =  extras.getBoolean("returnSkill"); // returnSkill value is passed from the previous activity to determine if a skill is expected to be added / returned to a profile
+        setAnimation();
     }
 
     @Override
@@ -80,6 +83,16 @@ public class SelectSkill extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         returnSkill =  extras.getBoolean("returnSkill"); // returnSkill value is passed from the previous activity to determine if a skill is expected to be added / returned to a profile
+        setAnimation();
+    }
+
+    // enable background animation
+    public void setAnimation(){
+        ConstraintLayout cl = findViewById(R.id.layout);
+        AnimationDrawable ad = (AnimationDrawable) cl.getBackground();
+        ad.setEnterFadeDuration(1500);
+        ad.setExitFadeDuration(3500);
+        ad.start();
     }
 
     // Load every valid skill grouped by it's category
