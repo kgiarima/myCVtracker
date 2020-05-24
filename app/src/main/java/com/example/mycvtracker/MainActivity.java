@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
     // show some info about the app
     public void showInfo(View view) {
-        String message = "Create your own personal CV templates based on your unique skills \n\n\nAn application created by:\nKiriakos Giarimagas";
+        String message = "Create your own personal CV templates based on your unique skills \n\n\nAn application created by:\nKiriakos Giarimagas\nPanagiota Xrysou\nMarios Tzitziras";
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setCancelable(true);
         builder.setTitle("Application Info");
